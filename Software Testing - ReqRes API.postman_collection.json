@@ -1,0 +1,379 @@
+{
+  "info": {
+    "_postman_id": "97c7b5c5-c446-4df9-a778-063d81d6aec3",
+    "name": "Software Testing - ReqRes API",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "59275792",
+    "_collection_link": "https://go.postman.co/collection/59275792-97c7b5c5-c446-4df9-a778-063d81d6aec3?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "TC01 - Get Single User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"TC01 - Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"TC01 - Response contains user data\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data).to.have.property(\"data\");\r\n    pm.expect(data.data.id).to.eql(2);\r\n});\r\n\r\npm.test(\"TC01 - User email is valid\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data.data.email).to.include(\"@\");\r\n});\r\n\r\npm.test(\"TC01 - Response time is below 3000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(3000);\r\n});\r\n\r\npm.test(\"TC01 - JSON Schema Validation\", function () {\r\n\r\n    const schema = {\r\n        type: \"object\",\r\n        required: [\"data\"],\r\n        properties: {\r\n            data: {\r\n                type: \"object\",\r\n                required: [\r\n                    \"id\",\r\n                    \"email\",\r\n                    \"first_name\",\r\n                    \"last_name\",\r\n                    \"avatar\"\r\n                ],\r\n                properties: {\r\n                    id: {\r\n                        type: \"number\"\r\n                    },\r\n                    email: {\r\n                        type: \"string\"\r\n                    },\r\n                    first_name: {\r\n                        type: \"string\"\r\n                    },\r\n                    last_name: {\r\n                        type: \"string\"\r\n                    },\r\n                    avatar: {\r\n                        type: \"string\"\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    };\r\n\r\n    pm.response.to.have.jsonSchema(schema);\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://reqres.in/api/users/2",
+          "protocol": "https",
+          "host": [
+            "reqres",
+            "in"
+          ],
+          "path": [
+            "api",
+            "users",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC02 - Get List of Users",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"TC02 - Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"TC02 - Response contains user list\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data).to.have.property(\"data\");\r\n    pm.expect(data.data).to.be.an(\"array\");\r\n});\r\n\r\npm.test(\"TC02 - Pagination information exists\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data).to.have.property(\"page\");\r\n    pm.expect(data).to.have.property(\"total\");\r\n});\r\n\r\npm.test(\"TC02 - Each user has an email\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.data.length).to.be.greaterThan(0);\r\n\r\n    data.data.forEach(function (user) {\r\n        pm.expect(user.email).to.include(\"@\");\r\n    });\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://reqres.in/api/users?page=2",
+          "protocol": "https",
+          "host": [
+            "reqres",
+            "in"
+          ],
+          "path": [
+            "api",
+            "users"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "2"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC03 - Create User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"TC03 - Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"TC03 - User name is correct\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.name).to.eql(\"Mitik\");\r\n});\r\n\r\npm.test(\"TC03 - Job is correct\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.job).to.eql(\"Software Testing Student\");\r\n});\r\n\r\npm.test(\"TC03 - Response contains created ID\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.id).to.exist;\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "\r\n{\r\n    \"name\": \"Mitik\",\r\n    \"job\": \"Software Testing Student\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://reqres.in/api/users",
+          "protocol": "https",
+          "host": [
+            "reqres",
+            "in"
+          ],
+          "path": [
+            "api",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC04 - Update User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"TC04 - Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"TC04 - Updated name is correct\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.name).to.eql(\"Mitik Updated\");\r\n});\r\n\r\npm.test(\"TC04 - Updated job is correct\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.job).to.eql(\"QA Engineer\");\r\n});\r\n\r\npm.test(\"TC04 - Response contains update timestamp\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.updatedAt).to.exist;\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "\r\n{\r\n    \"name\": \"Mitik Updated\",\r\n    \"job\": \"QA Engineer\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://reqres.in/api/users/2",
+          "protocol": "https",
+          "host": [
+            "reqres",
+            "in"
+          ],
+          "path": [
+            "api",
+            "users",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC05 - Partial Update User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"TC05 - Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"TC05 - Updated job is correct\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.job).to.eql(\"Senior QA Engineer\");\r\n});\r\n\r\npm.test(\"TC05 - Response contains update timestamp\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.updatedAt).to.exist;\r\n});\r\n\r\npm.test(\"TC05 - Response is valid JSON\", function () {\r\n    pm.expect(function () {\r\n        pm.response.json();\r\n    }).to.not.throw();\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "\r\n{\r\n    \"job\": \"Senior QA Engineer\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://reqres.in/api/users/2",
+          "protocol": "https",
+          "host": [
+            "reqres",
+            "in"
+          ],
+          "path": [
+            "api",
+            "users",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC06 - Delete User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"TC06 - Status code is 204\", function () {\r\n    pm.response.to.have.status(204);\r\n});\r\n\r\npm.test(\"TC06 - Response body is empty\", function () {\r\n    pm.expect(pm.response.text()).to.eql(\"\");\r\n});\r\n\r\npm.test(\"TC06 - Response time is below 3000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(3000);\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "https://reqres.in/api/users/2",
+          "protocol": "https",
+          "host": [
+            "reqres",
+            "in"
+          ],
+          "path": [
+            "api",
+            "users",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC07 - Get Invalid User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"TC07 - Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"TC07 - Response body is empty object\", function () {\r\n    pm.expect(pm.response.json()).to.be.an(\"object\");\r\n    pm.expect(pm.response.json()).to.be.empty;\r\n});\r\n\r\npm.test(\"TC07 - Response time is below 3000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(3000);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://reqres.in/api/users/23",
+          "protocol": "https",
+          "host": [
+            "reqres",
+            "in"
+          ],
+          "path": [
+            "api",
+            "users",
+            "23"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC08 - Login Without Password",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"TC08 - Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"TC08 - Missing password error exists\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.error).to.include(\"password\");\r\n});\r\n\r\npm.test(\"TC08 - Response is valid JSON\", function () {\r\n    pm.expect(function () {\r\n        pm.response.json();\r\n    }).to.not.throw();\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"peter@klaven\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://reqres.in/api/login",
+          "protocol": "https",
+          "host": [
+            "reqres",
+            "in"
+          ],
+          "path": [
+            "api",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC09 - Register Without Password",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"TC09 - Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"TC09 - Missing password error exists\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.error).to.include(\"password\");\r\n});\r\n\r\npm.test(\"TC09 - Response is valid JSON\", function () {\r\n    pm.expect(function () {\r\n        pm.response.json();\r\n    }).to.not.throw();\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"sydney@fife\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://reqres.in/api/register",
+          "protocol": "https",
+          "host": [
+            "reqres",
+            "in"
+          ],
+          "path": [
+            "api",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC10 - Get Invalid Resource",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"TC10 - Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"TC10 - Response body is empty object\", function () {\r\n    pm.expect(pm.response.json()).to.be.an(\"object\");\r\n    pm.expect(pm.response.json()).to.be.empty;\r\n});\r\n\r\npm.test(\"TC10 - Response time is below 3000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(3000);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://reqres.in/api/unknown/23",
+          "protocol": "https",
+          "host": [
+            "reqres",
+            "in"
+          ],
+          "path": [
+            "api",
+            "unknown",
+            "23"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
